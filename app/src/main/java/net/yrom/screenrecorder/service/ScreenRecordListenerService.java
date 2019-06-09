@@ -36,7 +36,7 @@ public class ScreenRecordListenerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        initNotification();
+//        initNotification();
     }
 
     @Override
@@ -47,14 +47,14 @@ public class ScreenRecordListenerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 当前界面是桌面，且没有悬浮窗显示，则创建悬浮窗。
-        if (!MyWindowManager.isWindowShowing()) {
+//        if (!MyWindowManager.isWindowShowing()) {
 //            handler.post(new Runnable() {
 //                @Override
 //                public void run() {
 //                    MyWindowManager.createSmallWindow(getApplicationContext());
 //                }
 //            });
-        }
+//        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -76,10 +76,10 @@ public class ScreenRecordListenerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mNotificationManager != null) {
-            mNotificationManager.cancel(NOTIFICATION_ID);
-        }
-        MyWindowManager.removeSmallWindow(getApplicationContext());
+//        if (mNotificationManager != null) {
+//            mNotificationManager.cancel(NOTIFICATION_ID);
+//        }
+//        MyWindowManager.removeSmallWindow(getApplicationContext());
     }
 
     private IScreenRecorderAidlInterface.Stub mBinder = new IScreenRecorderAidlInterface.Stub() {

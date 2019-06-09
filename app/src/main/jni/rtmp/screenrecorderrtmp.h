@@ -40,7 +40,7 @@ JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_write
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_close
- (JNIEnv * env,jlong , jobject );
+ (JNIEnv *, jclass, jlong );
 
 /*
  * Class:     net_yrom_screenrecorder_rtmp_RtmpClient

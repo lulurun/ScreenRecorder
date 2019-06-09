@@ -1,10 +1,11 @@
 #include <jni.h>
 #include <screenrecorderrtmp.h>
 #include <malloc.h>
+#include <string.h>
 #include "rtmp.h"
 
 JNIEXPORT jlong JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_open
- (JNIEnv * env, jobject thiz, jstring url_, jboolean isPublishMode) {
+ (JNIEnv * env, jclass thiz, jstring url_, jboolean isPublishMode) {
    	const char *url = (*env)->GetStringUTFChars(env, url_, 0);
    	LOGD("RTMP_OPENING:%s",url);
    	RTMP* rtmp = RTMP_Alloc();
@@ -55,7 +56,7 @@ JNIEXPORT jlong JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_open
  * Signature: (J[BII)I
  */
 JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_read
-(JNIEnv * env, jobject thiz,jlong rtmp, jbyteArray data_, jint offset, jint size) {
+(JNIEnv * env, jclass thiz,jlong rtmp, jbyteArray data_, jint offset, jint size) {
 
  	char* data = malloc(size*sizeof(char));
 
@@ -74,7 +75,7 @@ JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_read
  * Signature: (J[BIII)I
  */
 JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_write
-(JNIEnv * env, jobject thiz,jlong rtmp, jbyteArray data, jint size, jint type, jint ts) {
+(JNIEnv * env, jclass thiz,jlong rtmp, jbyteArray data, jint size, jint type, jint ts) {
  	LOGD("start write");
  	jbyte *buffer = (*env)->GetByteArrayElements(env, data, NULL);
  	RTMPPacket *packet = (RTMPPacket*)malloc(sizeof(RTMPPacket));
@@ -119,7 +120,7 @@ JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_write
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_close
- (JNIEnv * env,jlong rtmp, jobject thiz) {
+ (JNIEnv * env, jclass thiz, jlong rtmp) {
  	RTMP_Close((RTMP*)rtmp);
  	RTMP_Free((RTMP*)rtmp);
  	return 0;
@@ -130,7 +131,7 @@ JNIEXPORT jint JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_close
  * Signature: (J)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_net_yrom_screenrecorder_rtmp_RtmpClient_getIpAddr
-	(JNIEnv * env,jobject thiz,jlong rtmp) {
+	(JNIEnv * env,jclass thiz,jlong rtmp) {
 	if(rtmp!=0){
 		RTMP* r= (RTMP*)rtmp;
 		return (*env)->NewStringUTF(env, r->ipaddr);

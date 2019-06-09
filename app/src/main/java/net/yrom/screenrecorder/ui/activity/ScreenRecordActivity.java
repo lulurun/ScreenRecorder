@@ -152,15 +152,20 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (isRecording) stopScreenRecordService();
+        if (isRecording) startScreenRecordService();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (isRecording) startScreenRecordService();
+        if (isRecording) stopScreenRecordService();
     }
 
     private void startScreenRecordService() {
@@ -168,7 +173,7 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
             Intent runningServiceIT = new Intent(this, ScreenRecordListenerService.class);
             bindService(runningServiceIT, connection, BIND_AUTO_CREATE);
             startService(runningServiceIT);
-            startAutoSendDanmaku();
+            //startAutoSendDanmaku();
         }
     }
 

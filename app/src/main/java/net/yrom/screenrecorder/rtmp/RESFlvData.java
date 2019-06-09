@@ -7,9 +7,9 @@ package net.yrom.screenrecorder.rtmp;
 public class RESFlvData {
 
     // video size
-    public static final int VIDEO_WIDTH = 1280;
-    public static final int VIDEO_HEIGHT = 720;
-    public static final int VIDEO_BITRATE = 500000; // 500Kbps
+    public static final int VIDEO_WIDTH = 480;
+    public static final int VIDEO_HEIGHT = 270;
+    public static final int VIDEO_BITRATE = 300000;
     public static final int FPS = 20;
     public static final int AAC_SAMPLE_RATE = 44100;
     public static final int AAC_BITRATE = 32 * 1024;
