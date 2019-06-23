@@ -16,15 +16,11 @@
 package net.yrom.screenrecorder.ui.activity;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,20 +28,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import net.yrom.screenrecorder.IScreenRecorderAidlInterface;
 import net.yrom.screenrecorder.R;
-import net.yrom.screenrecorder.core.RESAudioClient;
 import net.yrom.screenrecorder.core.RESCoreParameters;
-import net.yrom.screenrecorder.model.DanmakuBean;
 import net.yrom.screenrecorder.rtmp.RESFlvData;
 import net.yrom.screenrecorder.rtmp.RESFlvDataCollecter;
-import net.yrom.screenrecorder.service.ScreenRecordListenerService;
 import net.yrom.screenrecorder.task.RtmpStreamingSender;
 import net.yrom.screenrecorder.task.ScreenRecorder;
-import net.yrom.screenrecorder.tools.LogTools;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,12 +44,9 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
     private EditText mRtmpAddET;
     private MediaProjectionManager mMediaProjectionManager;
     private ScreenRecorder mVideoRecorder;
-    private RESAudioClient audioClient;
     private RtmpStreamingSender streamingSender;
     private ExecutorService executorService;
-    private List<DanmakuBean> danmakuBeanList = new ArrayList<>();
     private String rtmpAddr;
-    private boolean isRecording;
     private RESCoreParameters coreParameters;
 
     public static void launchActivity(Context ctx) {
@@ -68,19 +54,6 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(it);
     }
-
-    private IScreenRecorderAidlInterface recorderAidlInterface;
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            recorderAidlInterface = IScreenRecorderAidlInterface.Stub.asInterface(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            recorderAidlInterface = null;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,16 +87,8 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
         };
         coreParameters = new RESCoreParameters();
 
-        audioClient = new RESAudioClient(coreParameters);
-
-        if (!audioClient.prepare()) {
-            LogTools.d("!!!!!audioClient.prepare()failed");
-            return;
-        }
-
         mVideoRecorder = new ScreenRecorder(collecter, RESFlvData.VIDEO_WIDTH, RESFlvData.VIDEO_HEIGHT, RESFlvData.VIDEO_BITRATE, 1, mediaProjection);
         mVideoRecorder.start();
-        audioClient.start(collecter);
 
         executorService = Executors.newCachedThreadPool();
         executorService.execute(streamingSender);
@@ -159,62 +124,14 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        if (isRecording) startScreenRecordService();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (isRecording) stopScreenRecordService();
-    }
-
-    private void startScreenRecordService() {
-        if (mVideoRecorder != null && mVideoRecorder.getStatus()) {
-            Intent runningServiceIT = new Intent(this, ScreenRecordListenerService.class);
-            bindService(runningServiceIT, connection, BIND_AUTO_CREATE);
-            startService(runningServiceIT);
-            //startAutoSendDanmaku();
-        }
-    }
-
-    private void startAutoSendDanmaku() {
-        ExecutorService exec = Executors.newCachedThreadPool();
-        exec.execute(new Runnable() {
-            @Override
-            public void run() {
-                int index = 0;
-                while (true) {
-                    DanmakuBean danmakuBean = new DanmakuBean();
-                    danmakuBean.setMessage(String.valueOf(index++));
-                    danmakuBean.setName("little girl");
-                    danmakuBeanList.add(danmakuBean);
-                    try {
-                        if (recorderAidlInterface != null) {
-                            recorderAidlInterface.sendDanmaku(danmakuBeanList);
-                        }
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
-    private void stopScreenRecordService() {
-        Intent runningServiceIT = new Intent(this, ScreenRecordListenerService.class);
-        stopService(runningServiceIT);
-        if (mVideoRecorder != null && mVideoRecorder.getStatus()) {
-            Toast.makeText(this, "现在正在进行录屏直播哦", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void createScreenCapture() {
-        isRecording = true;
         Intent captureIntent = mMediaProjectionManager.createScreenCaptureIntent();
         startActivityForResult(captureIntent, REQUEST_CODE);
     }
@@ -233,17 +150,4 @@ public class ScreenRecordActivity extends Activity implements View.OnClickListen
         }
         mButton.setText("Restart recorder");
     }
-
-    public static class RESAudioBuff {
-        public boolean isReadyToFill;
-        public int audioFormat = -1;
-        public byte[] buff;
-
-        public RESAudioBuff(int audioFormat, int size) {
-            isReadyToFill = true;
-            this.audioFormat = audioFormat;
-            buff = new byte[size];
-        }
-    }
-
 }

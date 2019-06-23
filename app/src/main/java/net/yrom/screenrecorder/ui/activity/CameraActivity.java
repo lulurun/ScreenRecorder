@@ -228,17 +228,6 @@ public class CameraActivity extends AppCompatActivity implements Camera.PreviewC
                     if (inputBufferIndex >= 0) {
                         ByteBuffer inputBuffer = inputBuffers[inputBufferIndex];
                         inputBuffer.clear();
-                        int rotateDegree = 90;
-                        long begin = System.currentTimeMillis();
-//                        byte[] rotatedFrame;
-//                        rotatedFrame = scaleOrRotateData(rawframe.data, rotateDegree, rawframe.isPPTVideoFrame);
-
-                        // color space transform. 下列方法是SRS项目中的格式转换方法，暂时用于调试，效率不一定高, 经过测试，平均 1帧需要12毫秒左右来转换
-//                        if (convertedYUVBytes == null || convertedYUVBytes.length != rotatedFrame.length) {
-//                            convertedYUVBytes = new byte[rotatedFrame.length];
-//                        }
-//                        YuvUtil.convertYV12ToSpecifiedYUV420(rotatedFrame, convertedYUVBytes, vColor,
-//                                DES_FRAME_WIDTH, DES_FRAME_HEIGHT);
                         inputBuffer.put(rawFrame, 0, rawFrame.length);
                         mEncoder.queueInputBuffer(inputBufferIndex, 0, rawFrame.length, mBufferInfo.presentationTimeUs * 1000, 0);//MS -> US
                     }
@@ -250,7 +239,7 @@ public class CameraActivity extends AppCompatActivity implements Camera.PreviewC
                         LogTools.d("VideoSenderThread,MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED");
                         break;
                     case MediaCodec.INFO_TRY_AGAIN_LATER:
-//                    LogTools.d("VideoSenderThread,MediaCodec.INFO_TRY_AGAIN_LATER");
+                        LogTools.d("VideoSenderThread,MediaCodec.INFO_TRY_AGAIN_LATER");
                         break;
                     case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
                         LogTools.d("VideoSenderThread,MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:" +

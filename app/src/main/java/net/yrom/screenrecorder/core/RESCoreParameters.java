@@ -9,49 +9,16 @@ import java.lang.reflect.Modifier;
  * Created by lake on 16-3-16.
  */
 public class RESCoreParameters {
-    public static final int FILTER_MODE_HARD = 1;
-    public static final int FILTER_MODE_SOFT = 2;
-
-    public static final int RENDERING_MODE_NATIVE_WINDOW = 1;
-    public static final int RENDERING_MODE_OPENGLES = 2;
-    /**
-     * same with jni
-     */
-    public static final int FLAG_DIRECTION_FLIP_HORIZONTAL = 0x01;
-    public static final int FLAG_DIRECTION_FLIP_VERTICAL = 0x02;
-    public static final int FLAG_DIRECTION_ROATATION_0 = 0x10;
-    public static final int FLAG_DIRECTION_ROATATION_90 = 0x20;
-    public static final int FLAG_DIRECTION_ROATATION_180 = 0x40;
-    public static final int FLAG_DIRECTION_ROATATION_270 = 0x80;
-
     public boolean done;
     public boolean printDetailMsg;
     public int filterMode;
-    public int renderingMode;
-    public String rtmpAddr;
-    public int frontCameraDirectionMode;
-    public int backCameraDirectionMode;
-    public boolean isPortrait;
-    public int previewVideoWidth;
-    public int previewVideoHeight;
     public int videoWidth;
     public int videoHeight;
     public int videoFPS;
-    public float cropRatio;
     public int previewColorFormat;
-    public int previewBufferSize;
     public int mediacodecAVCColorFormat;
     public int mediacdoecAVCBitRate;
     public int videoBufferQueueNum;
-    public int audioBufferQueueNum;
-    public int audioRecoderFormat;
-    public int audioRecoderSampleRate;
-    public int audioRecoderChannelConfig;
-    public int audioRecoderSliceSize;
-    public int audioRecoderSource;
-    public int audioRecoderBufferSize;
-    public int previewMaxFps;
-    public int previewMinFps;
     public int mediacodecAVCFrameRate;
     public int mediacodecAVCIFrameInterval;
     public int mediacodecAVCProfile;
@@ -77,7 +44,6 @@ public class RESCoreParameters {
         mediacodecAVCColorFormat = -1;
         mediacdoecAVCBitRate = -1;
         videoBufferQueueNum = -1;
-        audioBufferQueueNum = -1;
         mediacodecAVCFrameRate = -1;
         mediacodecAVCIFrameInterval = -1;
         mediacodecAVCProfile = -1;
